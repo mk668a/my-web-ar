@@ -8,7 +8,7 @@
       </div>
       <div id="createdModel">
         <h3>モデル</h3>
-        <!-- <model ref="model"></model> -->
+        <model ref="model"></model>
       </div>
 
       <div class="marker">
@@ -36,7 +36,7 @@
 </template>
 
 <script>
-// import model from "@/view/model.vue";
+import model from "@/views/model.vue";
 import generator from "@/views/create/generator.vue";
 import firebase from "firebase";
 
@@ -54,7 +54,7 @@ export default {
     };
   },
   components: {
-    // model,
+    model,
     generator
   },
   methods: {
@@ -188,15 +188,15 @@ export default {
 #create {
   #params {
     width: 100%;
-    div {
+    & > div {
       margin: 0 auto 15px 0;
 
-      h3 {
+      & > h3 {
         padding: 10px 0 5px 0;
         margin: 0;
       }
 
-      input {
+      & > input {
         width: 80%;
       }
     }
