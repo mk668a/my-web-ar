@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import model from "@/views/model.vue";
+import model from "@/views/create/model.vue";
 import generator from "@/views/create/generator.vue";
 import firebase from "firebase";
 

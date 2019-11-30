@@ -1,13 +1,17 @@
 <template>
   <div id="list">
     <h2>リスト</h2>
-    <div v-for="(item, i) in arData" :key="i" class="list-data" :id="'data-'+i">
+    <div v-for="(item, i) in arData" :key="i" :id="'data-'+i" class="list-data">
       <div class="list-title">
         <h3>{{item.title}}</h3>
         <img :src="external" @click="toItem(item.key)" />
       </div>
       <span>
-        <div class="list-a-frame"></div>
+        <div class="list-a-frame">
+          <a-scene v-html="item.model" embedded>
+            <a-entity camera look-controls position></a-entity>
+          </a-scene>
+        </div>
         <img v-if="item.original" :src="item.marker" id="marker" />
         <img v-else :src="hiro" id="marker" />
         <img :src="item.qr" id="qr" />
