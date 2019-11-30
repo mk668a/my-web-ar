@@ -5,7 +5,7 @@
         class="marker-img"
         :style="{width: (markerWidth*magni)+'px', height: (markerHeight*magni)+'px'}"
       >
-        <img v-if="preview" :src="preview" />
+        <img v-if="markerImg" :src="markerImg" />
       </div>
     </div>
 
@@ -24,11 +24,14 @@
         <div v-if="error">画像でない</div>
       </div>
     </div>
+
+    <button @click="toPatt">toPatt</button>
   </div>
 </template>
 
 <script>
 import firebase from "firebase";
+import three from "./threex-arpatternfile";
 
 export default {
   data() {
@@ -38,7 +41,6 @@ export default {
       magni: 0.5,
       frameColor: "#000",
       markerImg: require("@/assets/img/pattern-marker.png"),
-      preview: "",
       error: false
     };
   },
@@ -48,11 +50,30 @@ export default {
       this.markerImg = e.target.files[0];
 
       if (this.markerImg && this.markerImg.type.match(/^image\/(png|jpeg)$/)) {
-        this.preview = URL.createObjectURL(this.markerImg);
+        this.markerImg = URL.createObjectURL(this.markerImg);
         this.error = false;
       } else {
         this.error = true;
       }
+    },
+    toPatt() {
+      var THREEx = three.THREEx;
+      var innerImageURL = this.markerImg;
+      console.log(THREEx);
+
+      if (innerImageURL === null) {
+        alert("upload a file first");
+        return;
+      }
+      console.assert(innerImageURL);
+      THREEx.ArPatternFile.encodeImageURL(innerImageURL, function onComplete(
+        patternFileString
+      ) {
+        THREEx.ArPatternFile.triggerDownload(
+          patternFileString,
+          "pattern-" + "marker" + ".patt"
+        );
+      });
     }
   }
 };
