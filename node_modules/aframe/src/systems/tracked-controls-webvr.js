@@ -1,5 +1,6 @@
 var registerSystem = require('../core/system').registerSystem;
 var utils = require('../utils');
+var isWebXRAvailable = utils.device.isWebXRAvailable;
 
 /**
  * Tracked controls system.
@@ -14,6 +15,9 @@ module.exports.System = registerSystem('tracked-controls-webvr', {
 
     this.updateControllerList();
     this.throttledUpdateControllerList = utils.throttle(this.updateControllerList, 500, this);
+
+    // Don't use WebVR if WebXR is available?
+    if (isWebXRAvailable) { return; }
 
     if (!navigator.getVRDisplays) { return; }
 

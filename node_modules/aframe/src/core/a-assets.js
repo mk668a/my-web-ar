@@ -243,21 +243,36 @@ function extractDomain (url) {
 
 /**
  * Infer response-type attribute from src.
- * Default is text(default XMLHttpRequest.responseType)
- * but we use arraybuffer for .gltf and .glb files
- * because of THREE.GLTFLoader specification.
+ * Default is text (default XMLHttpRequest.responseType)
+ * and arraybuffer for .glb files.
  *
  * @param {string} src
  * @returns {string}
  */
 function inferResponseType (src) {
-  var dotLastIndex = src.lastIndexOf('.');
+  var fileName = getFileNameFromURL(src);
+  var dotLastIndex = fileName.lastIndexOf('.');
   if (dotLastIndex >= 0) {
-    var extension = src.slice(dotLastIndex, src.length);
-    if (extension === '.gltf' || extension === '.glb') {
+    var extension = fileName.slice(dotLastIndex, src.search(/\?|#|$/));
+    if (extension === '.glb') {
       return 'arraybuffer';
     }
   }
   return 'text';
 }
 module.exports.inferResponseType = inferResponseType;
+
+/**
+ * Extract filename from URL
+ *
+ * @param {string} url
+ * @returns {string}
+ */
+function getFileNameFromURL (url) {
+  var parser = document.createElement('a');
+  parser.href = url;
+  var query = parser.search.replace(/^\?/, '');
+  var filePath = url.replace(query, '').replace('?', '');
+  return filePath.substring(filePath.lastIndexOf('/') + 1);
+}
+module.exports.getFileNameFromURL = getFileNameFromURL;

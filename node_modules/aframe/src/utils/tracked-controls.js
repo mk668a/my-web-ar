@@ -37,7 +37,7 @@ module.exports.checkControllerPresentAndSetup = function (component, idPrefix, q
   // Update controller presence.
   if (isPresent) {
     component.injectTrackedControls();
-    if (!hasWebXR) { component.addEventListeners(); }
+    component.addEventListeners();
     el.emit('controllerconnected', {name: component.name, component: component});
   } else {
     component.removeEventListeners();
@@ -74,7 +74,7 @@ function isControllerPresentWebVR (component, idPrefix, queryObject) {
  *
  * @param {object} component - Tracked controls component.
  */
-function isControllerPresentWebXR (component, idPrefix, queryObject) {
+function isControllerPresentWebXR (component, id, queryObject) {
   var controllers;
   var sceneEl = component.el.sceneEl;
   var trackedControlsSystem = sceneEl && sceneEl.systems['tracked-controls-webxr'];
@@ -83,7 +83,9 @@ function isControllerPresentWebXR (component, idPrefix, queryObject) {
   controllers = trackedControlsSystem.controllers;
   if (!controllers || !controllers.length) { return false; }
 
-  return findMatchingControllerWebXR(controllers, queryObject.hand);
+  return findMatchingControllerWebXR(
+    controllers, id,
+    queryObject.hand, queryObject.index, queryObject.iterateControllerProfiles);
 }
 
 module.exports.isControllerPresentWebVR = isControllerPresentWebVR;
@@ -117,7 +119,7 @@ function findMatchingControllerWebVR (controllers, filterIdExact, filterIdPrefix
   var controller;
   var i;
   var matchingControllerOccurence = 0;
-  var targetControllerMatch = filterControllerIndex || 0;
+  var targetControllerMatch = filterControllerIndex >= 0 ? filterControllerIndex : 0;
 
   for (i = 0; i < controllers.length; i++) {
     controller = controllers[i];
@@ -138,6 +140,8 @@ function findMatchingControllerWebVR (controllers, filterIdExact, filterIdPrefix
     // NUM_HANDS matches for each controller number, instead of 1.
     if (filterHand && !controller.hand) {
       targetControllerMatch = NUM_HANDS * filterControllerIndex + ((filterHand === DEFAULT_HANDEDNESS) ? 0 : 1);
+    } else {
+      return controller;
     }
 
     // We are looking for the nth occurence of a matching controller
@@ -148,14 +152,32 @@ function findMatchingControllerWebVR (controllers, filterIdExact, filterIdPrefix
   return undefined;
 }
 
-function findMatchingControllerWebXR (controllers, handedness) {
+function findMatchingControllerWebXR (controllers, idPrefix, handedness, index, iterateProfiles) {
   var i;
-  var controllerHandedness;
+  var j;
+  var controller;
+  var controllerMatch = false;
+  var controllerHasHandedness;
+  var profiles;
   for (i = 0; i < controllers.length; i++) {
-    controllerHandedness = controllers[i].handedness;
-    if (!handedness || (controllerHandedness === '' && handedness === 'right') ||
-        controllers[i].handedness === handedness) {
-      return controllers[i];
+    controller = controllers[i];
+    profiles = controller.profiles;
+    if (profiles.length === 0) { return; }
+    if (iterateProfiles) {
+      for (j = 0; j < profiles.length; j++) {
+        controllerMatch = profiles[j].startsWith(idPrefix);
+        if (controllerMatch) { break; }
+      }
+    } else {
+      controllerMatch = profiles[0].startsWith(idPrefix);
+    }
+    if (!controllerMatch) { continue; }
+    // Vive controllers are assigned handedness at runtime and it might not be always available.
+    controllerHasHandedness = controller.handedness === 'right' || controller.handedness === 'left';
+    if (controllerHasHandedness) {
+      if (controller.handedness === handedness) { return controllers[i]; }
+    } else { // Fallback to index if controller has no handedness.
+      if ((i === index)) { return controllers[i]; }
     }
   }
   return undefined;
