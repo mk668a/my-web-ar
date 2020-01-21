@@ -1,7 +1,7 @@
 <template>
   <div id="model">
     <a-scene embedded id="createdScene">
-      <a-text :value="text" :color="fontColor" position="0 1 0"></a-text>
+      <a-text :value="text" :color="fontColor" position="0 -0.2 -4"></a-text>
       <a-box
         :position="position.x+' '+position.y+' '+position.z"
         :color="color"
@@ -9,7 +9,7 @@
         :width="width"
         :height="height"
       ></a-box>
-      <a-entity camera look-controls position="1 1.5 3"></a-entity>
+      <a-entity camera look-controls position></a-entity>
     </a-scene>
     <div id="setParams">
       <span>
@@ -69,19 +69,24 @@ export default {
       height: 1,
       position: {
         x: 0,
-        y: 0,
-        z: 0
+        y: -1,
+        z: -4
       }
     };
   },
   methods: {
     createModel() {
-      var createdModel = document.getElementById("createdModel");
+      // var createdModel = document.getElementById("createdScene");
+      // console.log(createdModel);
+      // return createdModel;
+
+      var createdModel = document.getElementById("model");
+      
       var modelList = [];
 
       if (createdModel) {
         var model = createdModel.childNodes;
-        var ascene = model[2].childNodes[0];
+        var ascene = model[0];
         var asceneChild = ascene.childNodes;
 
         for (var i in asceneChild) {

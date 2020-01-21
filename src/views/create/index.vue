@@ -22,13 +22,14 @@
           </select>
         </div>
         <div id="markerArea">
-          <generator v-if="original" ref="generator" @blob="postAr"></generator>
+          <generator v-if="original" ref="generator"></generator>
+          <!-- <generator v-if="original" ref="generator" @blob="postAr"></generator> -->
           <img v-else id="hiro" :src="hiro" :alt="hiro" />
         </div>
       </div>
     </div>
-    <div class="alert" v-if="titleAlert" title="タイトルを入力してください" type="error" :closable="false"></div>
-    <div class="alert" v-if="imgAlert" title="画像をアップロードしてください" type="error" :closable="false"></div>
+    <div class="alert" v-if="titleAlert">タイトルを入力してください</div>
+    <div class="alert" v-if="imgAlert">画像をアップロードしてください</div>
     <div id="create-buttons">
       <button type="danger" @click="getPattOfPostData">作成</button>
     </div>
@@ -43,10 +44,10 @@ import firebase from "firebase";
 export default {
   data() {
     return {
-      title: "",
+      title: "a",
       models: [],
       modelList: [],
-      original: false,
+      original: true,
       hiro: require("@/assets/img/HIRO.jpg"),
       titleAlert: false,
       imgAlert: false,
@@ -64,12 +65,16 @@ export default {
     titleChk() {
       if (this.title == "") {
         this.titleAlert = true;
+        console.log(this.titleAlert, "titleChk: ", this.title);
         return true;
       } else {
         this.titleAlert = false;
+        console.log(this.titleAlert, "titleChk: ", this.title);
+        return false;
       }
     },
     imgChk(marker) {
+      console.log("marker");
       // this.original == true && 画像がない
       if (this.original == true && marker == this.$store.state.defaultMarker) {
         this.imgAlert = true;
@@ -78,24 +83,26 @@ export default {
         this.imgAlert = false;
       }
     },
-    getModelListOfPostData() {
-      const refs = this.$refs;
-      this.modelList = refs.model.createModel();
-      console.log(this.modelList);
-    },
+    // getModelListOfPostData() {
+    //   const refs = this.$refs;
+    //   this.modelList = refs.model.createModel();
+    // },
     getPattOfPostData() {
+      console.log("push");
+
       if (this.titleChk()) {
         return;
       }
 
       const refs = this.$refs;
       this.modelList = refs.model.createModel();
+      // console.log(this.modelList);
 
       if (this.original == true) {
         console.log(this.$refs.generator);
         refs.generator.getPatt();
       } else {
-        this.postAr(null);
+        // this.postAr(null);
       }
     },
     createQrCode(key) {
@@ -237,6 +244,7 @@ export default {
 
   .alert {
     margin: 0 0 10px 0;
+    color: rgb(255, 88, 88);
   }
 }
 </style>
