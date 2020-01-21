@@ -1,7 +1,7 @@
 <template>
   <div id="model">
     <a-scene embedded id="createdScene">
-      <a-text :value="text" :color="fontColor" position="0 -0.2 -4"></a-text>
+      <a-text :value="text" :color="fontColor" position="0 1 0"></a-text>
       <a-box
         :position="position.x+' '+position.y+' '+position.z"
         :color="color"
@@ -9,7 +9,7 @@
         :width="width"
         :height="height"
       ></a-box>
-      <a-entity camera look-controls position></a-entity>
+      <a-entity camera look-controls position="0 0 4"></a-entity>
     </a-scene>
     <div id="setParams">
       <span>
@@ -63,23 +63,19 @@ export default {
       fontColor: "#2B39CC",
       text: "Hello, World!",
       shape: "a-box",
-      rotation: "-90 0 0",
+      rotation: "0 0 0",
       depth: 1,
       width: 1,
       height: 1,
       position: {
         x: 0,
-        y: -1,
-        z: -4
+        y: 0,
+        z: 0
       }
     };
   },
   methods: {
     createModel() {
-      // var createdModel = document.getElementById("createdScene");
-      // console.log(createdModel);
-      // return createdModel;
-
       var createdModel = document.getElementById("model");
 
       var modelList = [];
@@ -137,7 +133,7 @@ export default {
           }
         }
       }
-      modelList = modelList.join("");
+      // modelList = modelList.join("");
       return modelList;
     }
   }
