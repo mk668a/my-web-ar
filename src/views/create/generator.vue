@@ -25,8 +25,8 @@
       </div>
 
       <div class="buttons">
-        <button @click="toPatt">マーカー形式(patt)でダウンロード</button>
-        <button @click="toPng">png形式でダウンロード</button>
+        <button @click="getPatt">マーカー形式(patt)でダウンロード</button>
+        <button @click="getPng">png形式でダウンロード</button>
         <!-- 非表示 -->
         <a id="getImage" href style="display:none;" download="pattern-marker.png"></a>
         <!--  -->
@@ -49,7 +49,8 @@ export default {
       frameColor: "#000",
       markerImg: require("@/assets/img/pattern-marker.png"),
       error: false,
-      canvasData: null
+      fullMarkerURL: null,
+      pngData: null
     };
   },
   methods: {
@@ -65,6 +66,8 @@ export default {
       }
     },
     toPatt() {
+      const self = this;
+
       var THREEx = three.THREEx;
       var innerImageURL = this.markerImg;
       console.log(THREEx);
@@ -77,20 +80,42 @@ export default {
       THREEx.ArPatternFile.encodeImageURL(innerImageURL, function onComplete(
         patternFileString
       ) {
-        THREEx.ArPatternFile.triggerDownload(
-          patternFileString,
-          "pattern-" + "marker" + ".patt"
-        );
+        self.fullMarkerURL = patternFileString;
       });
+
+      return this.fullMarkerURL;
+    },
+    getPatt() {
+      var patternFileString = this.toPatt();
+
+      var THREEx = three.THREEx;
+      THREEx.ArPatternFile.triggerDownload(
+        patternFileString,
+        "pattern-marker.patt"
+      );
+    },
+    getPng() {
+      const self = this;
+      this.toPng();
+
+      window.setTimeout(function() {
+        self.downloadImage(self.pngData);
+      }, 1000);
+    },
+    setPng(data) {
+      this.pngData = data;
     },
     // html2canvas実行
     toPng() {
-      var self = this;
+      const self = this;
+
       html2canvas(document.getElementById("marker-frame"), {
         allowTaint: true
       }).then(canvas => {
-        self.downloadImage(canvas.toDataURL());
+        self.setPng(canvas.toDataURL());
       });
+
+      return this.pngData;
     },
     // 画像のダウンロード
     downloadImage(data) {
@@ -111,6 +136,34 @@ export default {
         document.getElementById("getImage").download = fname; //ダウンロードファイル名設定
         document.getElementById("getImage").click(); //自動クリック
       }
+    },
+    getMarker() {
+      const self = this;
+      // debugger
+      if (self.innerImageURL === null) {
+        alert("画像をアップロードしてください");
+        return;
+      }
+      // tech from https://stackoverflow.com/questions/3665115/create-a-file-in-memory-for-user-to-download-not-through-server
+      var domElement = window.document.createElement("a");
+      if (!this.fullMarkerURL) {
+        domElement.href = this.toPatt();
+      } else {
+        domElement.href = this.fullMarkerURL;
+      }
+      // set fileName
+      domElement.download = "pattern-marker.png";
+
+      document.body.appendChild(domElement);
+
+      // クリックイベントでダウンロード
+      // domElement.click();
+      //
+      // console.log("getMarker");
+
+      document.body.removeChild(domElement);
+
+      return domElement.getAttribute("href");
     }
   }
 };

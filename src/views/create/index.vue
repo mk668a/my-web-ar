@@ -31,7 +31,7 @@
     <div class="alert" v-if="titleAlert">タイトルを入力してください</div>
     <div class="alert" v-if="imgAlert">画像をアップロードしてください</div>
     <div id="create-buttons">
-      <button type="danger" @click="getPattOfPostData">作成</button>
+      <button type="danger" @click="postAr">作成</button>
     </div>
   </div>
 </template>
@@ -44,10 +44,10 @@ import firebase from "firebase";
 export default {
   data() {
     return {
-      title: "a",
+      title: "",
       models: [],
       modelList: [],
-      original: true,
+      original: false,
       hiro: require("@/assets/img/HIRO.jpg"),
       titleAlert: false,
       imgAlert: false,
@@ -65,18 +65,18 @@ export default {
     titleChk() {
       if (this.title == "") {
         this.titleAlert = true;
-        console.log(this.titleAlert, "titleChk: ", this.title);
+        // console.log(this.titleAlert, "titleChk: ", this.title);
         return true;
       } else {
         this.titleAlert = false;
-        console.log(this.titleAlert, "titleChk: ", this.title);
+        // console.log(this.titleAlert, "titleChk: ", this.title);
         return false;
       }
     },
     imgChk(marker) {
-      console.log("marker");
       // this.original == true && 画像がない
-      if (this.original == true && marker == this.$store.state.defaultMarker) {
+
+      if (marker == this.$store.state.defaultMarker || marker == "null") {
         this.imgAlert = true;
         return true;
       } else {
@@ -88,18 +88,10 @@ export default {
     //   this.modelList = refs.model.createModel();
     // },
     getPattOfPostData() {
-      console.log("push");
-
-      if (this.titleChk()) {
-        return;
-      }
-
-      const refs = this.$refs;
-      this.modelList = refs.model.createModel();
-      // console.log(this.modelList);
-
       if (this.original == true) {
-        console.log(this.$refs.generator);
+        // pattファイルを取得
+        const refs = this.$refs;
+        console.log(refs.generator);
         refs.generator.getPatt();
       } else {
         // this.postAr(null);
@@ -139,7 +131,21 @@ export default {
         });
       }
     },
-    postAr(blob) {
+    postAr() {
+      const refs = this.$refs;
+      console.log(refs);
+
+      // アップロード項目が揃っているか確認作業
+      console.log("push");
+      // * title
+      if (this.titleChk()) {
+        return;
+      }
+      console.log("title", this.title);
+      // * model
+      this.modelList = refs.model.createModel();
+      console.log("model", this.modelList);
+
       // Get a key for a new Post.
       var newPostKey = firebase
         .database()
@@ -147,29 +153,36 @@ export default {
         .child("posts")
         .push().key;
 
+      // * qr
+      var QR = this.createQrCode(newPostKey);
+
       // A post entry.
       var postData = {};
+      // * original
       if (this.original) {
         const refs = this.$refs;
-        var marker = refs.generator.getMarker();
+
+        // * marker
+        var marker = refs.generator.toPng();
+        console.log("marker", marker);
+
         if (this.imgChk(marker)) {
           return;
         }
-        console.log("blob by $emit");
-        console.log(blob);
-        this.uploadPatt(blob, newPostKey);
-
+        // console.log("blob by $emit");
+        // console.log(blob);
+        // this.uploadPatt(blob, newPostKey);
         postData = {
           title: this.title,
           marker: marker,
-          qr: this.createQrCode(newPostKey),
+          qr: QR,
           model: this.modelList,
           original: this.original
         };
       } else {
         postData = {
           title: this.title,
-          qr: this.createQrCode(newPostKey),
+          qr: QR,
           model: this.modelList,
           original: this.original
         };

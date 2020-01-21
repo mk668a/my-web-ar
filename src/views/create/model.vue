@@ -81,7 +81,7 @@ export default {
       // return createdModel;
 
       var createdModel = document.getElementById("model");
-      
+
       var modelList = [];
 
       if (createdModel) {
@@ -100,7 +100,7 @@ export default {
             // プリミティブなHTMLに存在しないAttributeの値を設定
 
             for (var j in Node_i.attributes) {
-              console.log(Node_i.attributes[j]);
+              // console.log(Node_i.attributes[j]);
 
               // Attribute名を取得
               var attributeName = Node_i.attributes[j].localName;
@@ -110,8 +110,8 @@ export default {
                 var attribute = Node_i.getAttribute(attributeName);
 
                 if (attribute) {
-                  console.log("attribute");
-                  console.log(attribute);
+                  // console.log("attribute");
+                  // console.log(attribute);
 
                   var nodeValue = "";
 
@@ -137,6 +137,7 @@ export default {
           }
         }
       }
+      modelList = modelList.join("");
       return modelList;
     }
   }
