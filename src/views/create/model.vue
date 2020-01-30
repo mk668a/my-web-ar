@@ -1,7 +1,7 @@
 <template>
   <div id="model">
-    <a-scene embedded id="createdScene">
-      <a-text :value="text" :color="fontColor" position="0 1 0"></a-text>
+    <a-scene embedded id="createdScene" vr-mode-ui="enabled: false">
+      <a-text :value="text" :color="fontColor" position="0 1 0" :rotation="rotation"></a-text>
       <a-box
         :position="position.x+' '+position.y+' '+position.z"
         :color="color"
@@ -9,7 +9,7 @@
         :width="width"
         :height="height"
       ></a-box>
-      <a-entity camera look-controls position="0 0 4"></a-entity>
+      <a-entity id="camera" camera look-controls position="0 0 4"></a-entity>
     </a-scene>
     <div id="setParams">
       <span>
@@ -55,7 +55,9 @@
   </div>
 </template>
 
-<script >
+<script>
+import $ from "jquery";
+
 export default {
   data() {
     return {
@@ -71,7 +73,9 @@ export default {
         x: 0,
         y: 0,
         z: 0
-      }
+      },
+      camera_length: 4,
+      camera_theata: 0
     };
   },
   methods: {
@@ -135,7 +139,23 @@ export default {
       }
       // modelList = modelList.join("");
       return modelList;
+    },
+    rotate() {
+      this.camera_theata++;
+      $("#camera").attr(
+        "position",
+        this.camera_length * Math.sin((this.camera_theata * Math.PI) / 180) +
+          " 0 " +
+          this.camera_length * Math.cos((this.camera_theata * Math.PI) / 180)
+      );
+      $("#camera").attr("rotation", "0 " + this.camera_theata + " 0");
     }
+  },
+  mounted() {
+    let camera_length = 4;
+    let camera_theata = 0;
+
+    setInterval(this.rotate, 10);
   }
 };
 </script>
@@ -144,6 +164,10 @@ export default {
 // @import "../assets/style/vr.scss";
 #model {
   display: flex;
+
+  #createdScene {
+    pointer-events: none;
+  }
 
   #setParams {
     margin: 10px !important;

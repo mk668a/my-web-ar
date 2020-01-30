@@ -9,6 +9,7 @@
   "dependencies": {
     "aframe": "^1.0.3",
     "core-js": "^3.6.4",
+    "jquery": "^3.4.1",
     "register-service-worker": "^1.6.2",
     "three": "^0.112.1",
     "vue": "^2.6.11",
