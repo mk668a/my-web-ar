@@ -1,6 +1,23 @@
 <template>
   <div id="list">
     <h2>リスト</h2>
+    <!-- <div class="list-data">
+      <a-scene v-html="ex"></a-scene>
+    </div>-->
+
+    <!-- <div v-for="(item, i) in arData" :key="i" class="list-data" :id="'data-'+i">
+      <div class="list-title">
+        <h3>{{item.title}}</h3>
+        <img :src="external" @click="toItem(item.key)" />
+      </div>
+      <span>
+        <div class="list-a-frame"></div>
+        <img v-if="item.original" :src="item.marker" id="marker" />
+        <img v-else :src="hiro" id="marker" />
+        <img :src="item.qr" id="qr" />
+      </span>
+    </div>-->
+
     <div v-for="(item, i) in arData" :key="i" :id="'data-'+i" class="list-data">
       <div class="list-title">
         <h3>{{item.title}}</h3>
@@ -8,8 +25,8 @@
       </div>
       <span>
         <div class="list-a-frame">
-          <a-scene v-html="item.model" embedded>
-            <a-entity camera look-controls position></a-entity>
+          <a-scene v-html="item.model" vr-mode-ui="enabled: false" embedded>
+            <a-entity camera look-controls position="0 0 4"></a-entity>
           </a-scene>
         </div>
         <img v-if="item.original" :src="item.marker" id="marker" />
@@ -17,6 +34,8 @@
         <img :src="item.qr" id="qr" />
       </span>
     </div>
+
+    <!-- </div> -->
   </div>
 </template>
 
@@ -71,6 +90,7 @@ export default {
 
       return tmpElmt.childNodes;
     },
+    // unused
     setDom() {
       // console.log("set");
 
@@ -126,12 +146,14 @@ export default {
           //     <div class="list-a-frame">
           //       <a-scene embedded>
           //         <model></model>
+          //         <a-entity camera></a-entity>
           //       </a-scene>
           //     </div>
           listAFrame.insertBefore(ascene, listAFrame.firstChild);
         }
       }
     },
+    //
     toItem(key) {
       window.open(
         `https://web-ar-change-ar-page.firebaseapp.com/?q=${key}`,
@@ -143,10 +165,11 @@ export default {
     this.getArData();
   },
   mounted() {
-    var self = this;
-    setTimeout(function() {
-      self.setDom();
-    }, 1000);
+    //  this.getArData();
+    // var self = this;
+    // setTimeout(function() {
+    //   self.setDom();
+    // }, 1000);
     // this.$nextTick(() => {});
   }
 };

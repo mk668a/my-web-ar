@@ -11,20 +11,24 @@
 
     <div class="params">
       <div class="frame-size">
+        <div>枠のサイズ</div>
         <input type="range" v-model="magni" step="0.01" min="0.1" max="0.9" />
         {{magni}}
       </div>
 
       <div class="frame-color">
+        <div>枠の色</div>
         <input type="color" v-model="frameColor" />
       </div>
 
       <div class="marker-img">
+        <div>マーカーの画像</div>
         <input type="file" name="marker-img" accept="image/*" @change="uploadImg" />
         <div v-if="error">対応していない形式のファイルです</div>
       </div>
 
       <div class="buttons">
+        <div>マーカーのダウンロード</div>
         <button @click="getPatt">マーカー形式(patt)でダウンロード</button>
         <button @click="getPng">png形式でダウンロード</button>
         <!-- 非表示 -->
@@ -185,6 +189,25 @@ export default {
       img {
         width: 100%;
         height: 100%;
+      }
+    }
+  }
+
+  .params {
+    margin-left: 10px;
+
+    input,
+    button {
+      cursor: pointer;
+    }
+
+    & > div {
+      margin: 10px;
+
+      button {
+        &:nth-of-type(1) {
+          margin-right: 10px;
+        }
       }
     }
   }

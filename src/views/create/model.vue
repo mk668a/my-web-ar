@@ -75,7 +75,8 @@ export default {
         z: 0
       },
       camera_length: 4,
-      camera_theata: 0
+      camera_theata: 0,
+      rotate_interval: null
     };
   },
   methods: {
@@ -152,10 +153,10 @@ export default {
     }
   },
   mounted() {
-    let camera_length = 4;
-    let camera_theata = 0;
-
-    setInterval(this.rotate, 10);
+    this.rotate_interval = setInterval(this.rotate, 10);
+  },
+  destroyed() {
+    clearInterval(this.rotate_interval);
   }
 };
 </script>
@@ -180,6 +181,11 @@ export default {
 
       label {
         display: block;
+      }
+
+      #model-color,
+      #model-fontColor {
+        cursor: pointer;
       }
     }
   }

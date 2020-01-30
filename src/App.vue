@@ -341,6 +341,7 @@ input,
 select {
   margin: 0;
   color: #333;
+  background: transparent;
   border: 2px solid #cfcfcf;
   border-radius: 5px;
   height: 2.5rem;

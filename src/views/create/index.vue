@@ -14,11 +14,9 @@
       <div class="marker">
         <h3>マーカー</h3>
         <div id="switch">
-          <div v-if="original">オリジナルマーカーを使う</div>
-          <div v-else>デフォルトマーカーを使う</div>
           <select class="switch" v-model="original" active-color="#13ce66" inactive-color="#ff4949">
-            <option :value="false">false</option>
-            <option :value="true">true</option>
+            <option :value="false">デフォルトマーカーを使う</option>
+            <option :value="true">オリジナルマーカーを使う</option>
           </select>
         </div>
         <div id="markerArea">
@@ -224,14 +222,17 @@ export default {
     .marker {
       #switch {
         display: flex;
-        div {
+        margin-bottom: 10px;
+
+        p {
           font-size: 1rem;
           vertical-align: 0;
           margin-right: 15px;
         }
 
         .switch {
-          margin-left: 0;
+          cursor: pointer;
+          margin: auto auto auto 0;
         }
       }
 
@@ -252,7 +253,22 @@ export default {
 
   #create-buttons {
     text-align: center;
-    margin: 10px 0 50px 0;
+    margin: 25px 0 50px 0;
+
+    button {
+      width: 150px;
+      cursor: pointer;
+      font-weight: bold;
+      color: rgb(255, 64, 64);
+      border: 2px solid rgb(255, 64, 64);
+      transition: all ease 0.26s;
+
+      &:hover {
+        background: rgb(255, 64, 64);
+        color: #fff;
+        transition: all ease 0.26s;
+      }
+    }
   }
 
   .alert {
