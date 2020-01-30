@@ -1,11 +1,7 @@
 <template>
   <div id="list">
     <h2>リスト</h2>
-    <!-- <div class="list-data">
-      <a-scene v-html="ex"></a-scene>
-    </div>-->
-
-    <!-- <div v-for="(item, i) in arData" :key="i" class="list-data" :id="'data-'+i">
+    <div v-for="(item, i) in arData" :key="i" :id="'data-'+i" class="list-data">
       <div class="list-title">
         <h3>{{item.title}}</h3>
         <img :src="external" @click="toItem(item.key)" />
@@ -16,26 +12,7 @@
         <img v-else :src="hiro" id="marker" />
         <img :src="item.qr" id="qr" />
       </span>
-    </div>-->
-
-    <div v-for="(item, i) in arData" :key="i" :id="'data-'+i" class="list-data">
-      <div class="list-title">
-        <h3>{{item.title}}</h3>
-        <img :src="external" @click="toItem(item.key)" />
-      </div>
-      <span>
-        <div class="list-a-frame">
-          <a-scene v-html="item.model" vr-mode-ui="enabled: false" embedded>
-            <a-entity camera look-controls position="0 0 4"></a-entity>
-          </a-scene>
-        </div>
-        <img v-if="item.original" :src="item.marker" id="marker" />
-        <img v-else :src="hiro" id="marker" />
-        <img :src="item.qr" id="qr" />
-      </span>
     </div>
-
-    <!-- </div> -->
   </div>
 </template>
 
@@ -46,15 +23,25 @@ export default {
   data() {
     return {
       deleteAR: undefined,
-      arData: new Array(),
+      arData: [],
       hiro: require("@/assets/img/HIRO.jpg"),
       external: require("@/assets/svg/external-link-symbol.svg")
     };
   },
-  components: {},
+  watch: {
+    arData: function() {
+      var self = this;
+      setTimeout(function() {
+        self.setDom();
+      }, 1000);
+      this.$nextTick(() => {});
+    }
+  },
   methods: {
     getArData() {
       var self = this;
+      var arData = [];
+
       return firebase
         .database()
         .ref("/data")
@@ -63,7 +50,7 @@ export default {
           var res = snapshot.val();
 
           for (let i in res) {
-            self.arData.push({
+            arData.push({
               key: i,
               title: res[i].title,
               marker: res[i].marker,
@@ -71,10 +58,12 @@ export default {
               model: res[i].model,
               original: res[i].original
             });
+
+            console.log(arData);
           }
-          console.log(self.arData);
+
           // 逆順にする
-          self.arData = self.arData.reverse();
+          self.arData = arData.reverse();
         });
     },
     htmlToNode(htmlStr) {
@@ -92,65 +81,63 @@ export default {
     },
     // unused
     setDom() {
-      // console.log("set");
+      console.log("set");
 
       var arData = this.arData;
 
       for (let i in arData) {
-        var title = arData[i].title;
         var model = arData[i].model;
-        var marker = arData[i].marker;
-        var qr = arData[i].qr;
 
         // get div
         var div = document.getElementById(`data-${i}`);
-        // console.log(div);
+        console.log(div);
 
         // get span
-        if (div) {
-          var span = div.getElementsByTagName("span")[0];
-          // console.log(span);
-          // get list-a-frame
-          var listAFrame = span.getElementsByClassName("list-a-frame")[0];
-          // console.log(listAFrame);
+        var span = div.getElementsByTagName("span")[0];
+        // console.log(span);
+        // get list-a-frame
+        var listAFrame = span.getElementsByClassName("list-a-frame")[0];
+        // console.log(listAFrame);
 
-          // create a-scene
-          // <a-scene embedded></a-scene>;
-          var ascene = document.createElement("a-scene");
-          ascene.setAttribute("embedded", "");
+        // create a-scene
+        // <a-scene embedded></a-scene>;
+        var ascene = document.createElement("a-scene");
+        ascene.setAttribute("embedded", "");
+        ascene.setAttribute("vr-mode-ui", "enabled: false");
 
-          // set model to a-scene
-          // <a-scene embedded>
-          //   <model></model>
-          // </a-scene>;
-          if (model) {
-            for (let j in model) {
-              var modelChild = this.htmlToNode(model[j]);
-              if (modelChild) ascene.appendChild(modelChild[0]);
-            }
-            // console.log("set model to a-scene");
-            // console.log(ascene);
-          }
-          // set human camera to a-scene
-          // <a-scene embedded>
-          //   <model></model>
-          //   <a-entity camera></a-entity>
-          // </a-scene>;
-          var camera = document.createElement("a-entity");
-          camera.setAttribute("camera", "");
-          camera.setAttribute("look-controls", "");
-          camera.setAttribute("position", "1 1.5 3");
-          ascene.appendChild(camera);
+        // set model to a-scene
+        // <a-scene embedded>
+        //   <model></model>
+        // </a-scene>;
+        for (let j in model) {
+          console.log(model[j]);
 
-          // set ascene to list-a-frame
-          //     <div class="list-a-frame">
-          //       <a-scene embedded>
-          //         <model></model>
-          //         <a-entity camera></a-entity>
-          //       </a-scene>
-          //     </div>
-          listAFrame.insertBefore(ascene, listAFrame.firstChild);
+          var modelChild = this.htmlToNode(model[j]);
+          if (modelChild) ascene.appendChild(modelChild[0]);
         }
+        // console.log("set model to a-scene");
+        // console.log(ascene);
+
+        // set human camera to a-scene
+        // <a-scene embedded>
+        //   <model></model>
+        //   <a-entity camera></a-entity>
+        // </a-scene>;
+        var camera = document.createElement("a-entity");
+        camera.setAttribute("camera", "");
+        camera.setAttribute("look-controls", "");
+        camera.setAttribute("position", "0 0 4");
+        ascene.appendChild(camera);
+
+        // set ascene to list-a-frame
+        //     <div class="list-a-frame">
+        //       <a-scene embedded>
+        //         <model></model>
+        //         <a-entity camera></a-entity>
+        //       </a-scene>
+        //     </div>
+        listAFrame.insertBefore(ascene, listAFrame.firstChild);
+        console.log(listAFrame);
       }
     },
     //
@@ -163,14 +150,6 @@ export default {
   },
   created() {
     this.getArData();
-  },
-  mounted() {
-    //  this.getArData();
-    // var self = this;
-    // setTimeout(function() {
-    //   self.setDom();
-    // }, 1000);
-    // this.$nextTick(() => {});
   }
 };
 </script>
@@ -210,23 +189,29 @@ export default {
       }
 
       .list-a-frame {
-        height: 300px;
-        width: 300px;
+        height: 260px;
+        width: 260px;
         background: #c3c3c3;
+        margin: auto auto auto 0;
       }
 
-      img {
-        width: 200px;
+      #marker {
+        width: 180px;
+        margin: auto 0 auto auto;
+      }
+
+      #qr {
+        width: 240px;
+        margin: auto auto auto 0;
       }
     }
   }
 
   a-scene {
     display: block;
-    width: 300px;
-    height: 300px;
+    width: 260px;
+    height: 260px;
     background: #c3c3c3;
   }
 }
 </style>
-
