@@ -23,7 +23,16 @@
 
       <div class="marker-img">
         <div>マーカーの画像</div>
-        <input type="file" name="marker-img" accept="image/*" @change="uploadImg" />
+        <label for="file_upload">
+          ファイルを選択して下さい
+          <input
+            type="file"
+            name="marker-img"
+            id="file_upload"
+            accept="image/*"
+            @change="uploadImg"
+          />
+        </label>
         <div v-if="error">対応していない形式のファイルです</div>
       </div>
 
@@ -185,7 +194,6 @@ export default {
     .marker-img {
       margin: auto;
       background: #fff;
-
       img {
         width: 100%;
         height: 100%;
@@ -195,6 +203,22 @@ export default {
 
   .params {
     margin-left: 10px;
+
+    .marker-img {
+      label {
+        cursor: pointer;
+        width: 140px;
+        height: 40px;
+        border: 2px solid #cfcfcf;
+        border-radius: 5px;
+        font: 400 11px system-ui;
+        padding: 0.5rem;
+
+        input {
+          display: none;
+        }
+      }
+    }
 
     input,
     button {
