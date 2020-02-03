@@ -67,6 +67,18 @@ body {
   }
 }
 
+@media screen and (max-width: 768px) {
+  body {
+    & > div {
+      #main {
+        .container {
+          width: 100vw;
+        }
+      }
+    }
+  }
+}
+
 /* Document
  * ========================================================================== */
 
