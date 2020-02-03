@@ -10,16 +10,9 @@
 
 <script>
 export default {
-  data() {
-    return {
-      isOpen: false
-    };
-  },
-  methods: {
-    openMenu() {
-      this.isOpen = !this.isOpen;
-      console.log(this.isOpen);
-    }
+  props: {
+    isOpen: Boolean,
+    openMenu: Function
   }
 };
 </script>
