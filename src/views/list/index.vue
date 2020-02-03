@@ -17,6 +17,7 @@
 </template>
 
 <script>
+import $ from "jquery";
 import firebase from "firebase";
 
 export default {
@@ -25,7 +26,10 @@ export default {
       deleteAR: undefined,
       arData: [],
       hiro: require("@/assets/img/HIRO.jpg"),
-      external: require("@/assets/svg/external-link-symbol.svg")
+      external: require("@/assets/svg/external-link-symbol.svg"),
+      camera_length: 4,
+      camera_theata: 0,
+      rotate_interval: null
     };
   },
   watch: {
@@ -124,6 +128,7 @@ export default {
         //   <a-entity camera></a-entity>
         // </a-scene>;
         var camera = document.createElement("a-entity");
+        camera.setAttribute("id", "camera");
         camera.setAttribute("camera", "");
         camera.setAttribute("look-controls", "");
         camera.setAttribute("position", "0 0 4");
@@ -146,10 +151,25 @@ export default {
         `https://web-ar-change-ar-page.firebaseapp.com/?q=${key}`,
         "_blank"
       );
+    },
+    rotate() {
+      this.camera_theata++;
+      $("#camera").attr(
+        "position",
+        this.camera_length * Math.sin((this.camera_theata * Math.PI) / 180) +
+          " 0 " +
+          this.camera_length * Math.cos((this.camera_theata * Math.PI) / 180)
+      );
+      $("#camera").attr("rotation", "0 " + this.camera_theata + " 0");
     }
   },
   created() {
     this.getArData();
+    this.rotate_interval = setInterval(this.rotate, 10);
+  },
+  mounted() {},
+  destroyed() {
+    clearInterval(this.rotate_interval);
   }
 };
 </script>
