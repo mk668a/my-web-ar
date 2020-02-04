@@ -141,8 +141,8 @@ body {
  * `article` contexts in Chrome, Edge, Firefox, and Safari.
  */
 
-h1 {
-}
+// h1 {
+// }
 
 /* Grouping content
  * ========================================================================== */
