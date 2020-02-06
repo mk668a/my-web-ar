@@ -49,4 +49,12 @@ export default {
     }
   }
 }
+
+@media screen and (max-width: 768px) {
+  #top {
+    h1 {
+      padding-right: 60px;
+    }
+  }
+}
 </style>
