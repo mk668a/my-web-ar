@@ -3,6 +3,7 @@
     <mainHeader :toRoute="toRoute"></mainHeader>
     <div id="main">
       <sideMenu :toRoute="toRoute"></sideMenu>
+      <mobileSideMenu></mobileSideMenu>
       <div class="container">
         <router-view />
       </div>
@@ -14,12 +15,14 @@
 <script>
 import mainHeader from "@/views/mainHeader.vue";
 import sideMenu from "@/views/sideMenu.vue";
+import mobileSideMenu from "@/views/mobileSideMenu.vue";
 import mainFooter from "@/views/mainFooter.vue";
 
 export default {
   components: {
     mainHeader,
     sideMenu,
+    mobileSideMenu,
     mainFooter
   },
   methods: {
@@ -37,11 +40,14 @@ $fonts: Fira Sans, Helvetica, Arial, sans-serif;
 body {
   margin: 0;
   font: $fonts;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  position: absolute;
 
   & > div {
-    height: 100vh;
-    width: 100vw;
-    overflow: hidden;
+    // height: 100%;
+    // width: 100%;
 
     #main {
       height: 92vh;
