@@ -1,11 +1,11 @@
 <template>
   <div id="mainFooter">
-    <p>
+    <div class="copyright">
       Copyright
       <a href="https://github.com/mk668a" target="_blank">
         <b>mk668a</b>
       </a> All Rights Reserved.
-    </p>
+    </div>
   </div>
 </template>
 
@@ -15,14 +15,16 @@ export default {};
 
 <style lang="scss">
 #mainFooter {
-  border-top: 1px solid #ddd;
+  border-top: 1px solid #c3c3c3;
   background: #fff;
-  height: 3vh;
+  display: flex;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100vw;
 
-  p {
-    text-align: right;
-    margin: 0 10px 0 0;
-    padding: 5px;
+  .copyright {
+    margin: auto 10px auto auto;
     font-size: 0.1rem;
   }
 }
