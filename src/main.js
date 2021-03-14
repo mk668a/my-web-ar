@@ -10,13 +10,13 @@ import firebase from 'firebase'
 
 if (!firebase.apps.length) {
   firebase.initializeApp({
-    apiKey: "AIzaSyCRwBG7hWpMeXyH1O28wmcx__JZw4ZEQ-U",
-    authDomain: "webar-8fa80.firebaseapp.com",
-    databaseURL: "https://webar-8fa80.firebaseio.com",
-    projectId: "webar-8fa80",
-    storageBucket: "webar-8fa80.appspot.com",
-    messagingSenderId: "996519997485",
-    appId: "1:996519997485:web:c41496eabb41003df088a4"
+    apiKey: "AIzaSyAuS3JoPweTKmaE1y1umJFjwHjmfv0iLhE-U",
+    authDomain: "my-web-ar.firebaseapp.com",
+    databaseURL: "https://my-web-ar-default-rtdb.firebaseio.com/",
+    projectId: "my-web-ar",
+    storageBucket: "my-web-ar.appspot.com",
+    messagingSenderId: "263864417017",
+    appId: "1:263864417017:web:82887403353b23588dc028"
   })
 }
 
